@@ -25,7 +25,7 @@
   - { name: 'php-process',         state: 'present'}
 
 - name: Enable php-fpm service
-  service: name=nginx state=started enabled=yes
+  service: name=php-fpm state=started enabled=yes
 
 - name: Copy the php.ini configuration file (/etc/php.ini)
   template:
