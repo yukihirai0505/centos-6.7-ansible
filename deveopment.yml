@@ -1,8 +1,9 @@
 - hosts: centos-6.7
   become: yes
   roles:
-    #- ./common-roles/base
-    #- ./common-roles/nginx
-    #- ./common-roles/php
+    - ./common-roles/base
+    - ./common-roles/nginx
+    - ./common-roles/php
     - ./common-roles/mysql
-    #- yukihirai0505
+    - ./common-roles/python
+    - yukihirai0505

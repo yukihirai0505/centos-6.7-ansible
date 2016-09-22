@@ -35,7 +35,13 @@
   - { name: 'perl-ExtUtils-Embed',  state: 'present'}
   - { name: 'w3m',                  state: 'present'}
   - { name: 'bind-utils',           state: 'present'}
-  - { name: '@development-tools',   state: 'present'}
+  - { name: 'bzip2-devel',          state: 'present'}
+  - { name: 'ncurses-devel',        state: 'present'}
+  - { name: 'sqlite-devel',         state: 'present'}
+  - { name: 'tk-devel',             state: 'present'}
+
+- name: install the 'Development tools' package group
+  yum: name="@Development tools" state=present
 
 - name: Install packages from epel
   yum: name={{ item.name }} state={{ item.state }} enablerepo=epel

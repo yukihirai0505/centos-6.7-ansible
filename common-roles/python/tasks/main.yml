@@ -1,0 +1,23 @@
+---
+
+- name: Copy dl_python-3.5.0.sh file
+  template:
+    src: tmp/dl_python-3.5.0.sh.j2
+    dest: /tmp/dl_python-3.5.0.sh
+    owner: root
+    group: root
+    mode: 0655
+
+- name: Unpack Python-3.5.0.tgz
+  unarchive:
+    src: common-roles/python/templates/tmp/Python-3.5.0.tgz
+    dest: /tmp/
+
+- name: Install python-3.5.0
+  shell: /tmp/dl_python-3.5.0.sh
+
+- name: Create python symbolic link
+  file: src=/usr/local/python/bin/python3 dest=/usr/local/bin/python state=link
+
+- name: Create pip symbolic link
+  file: src=/usr/local/python/bin/pip3.5 dest=/usr/local/bin/pip state=link
