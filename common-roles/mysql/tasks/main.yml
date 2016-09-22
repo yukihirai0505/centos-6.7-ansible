@@ -1,0 +1,67 @@
+---
+
+- name: Add mysql repo
+  yum:
+    name: 'http://repo.mysql.com/mysql-community-release-el6-7.noarch.rpm'
+    state: 'present'
+
+- name: Install mysql
+  yum: name={{ item.name }} state={{ item.state }} enablerepo=mysql56-community disablerepo=mysql57-community
+  with_items:
+  - { name: 'mysql-community-server',   state: 'present'}
+  - { name: 'mysql-community-client',   state: 'present'}
+  - { name: 'mysql-community-common',   state: 'present'}
+  - { name: 'mysql-community-libs',   state: 'present'}
+  - { name: 'mysql-community-libs-compat',   state: 'present'}
+
+- name: Enable mysqld service
+  service: name=mysqld state=started enabled=yes
+
+- name: Install mysql module for andible
+  yum:
+    name: MySQL-python
+    state: present
+
+- name: Check mysql init setting
+  shell: 'mysqladmin --defaults-file={{ mysqld_5_6.defaults_file }} ping | grep alive'
+  ignore_errors: true
+  register: init_flag
+
+- name: Remove anonymous user
+  mysql_user:
+    name: ''
+    host: '{{ item.name }}'
+    state: absent
+  with_items:
+    - { name: 'localhost.localdomain' }
+    - { name: 'localhost' }
+  when: init_flag.rc == 1
+
+- name: Change root user password
+  mysql_user:
+    name: root
+    host: '{{ item.name }}'
+    password: '{{ mysqld_5_6.root_password }}'
+  with_items:
+    - { name: '127.0.0.1' }
+    - { name: '::1' }
+    - { name: 'localhost.localdomain' }
+    - { name: 'localhost' }
+  when: init_flag.rc == 1
+
+- name: Copy root user setting file
+  template:
+    src: etc/.my.cnf.j2
+    dest: '{{ mysqld_5_6.defaults_file }}'
+    owner: root
+    group: root
+    mode: 0600
+  when: init_flag.rc == 1
+
+- name: Copy mysql setting file
+  template:
+    src: etc/my.cnf.j2
+    dest: /etc/my.cnf
+    owner: root
+    group: root
+    mode: 0644
