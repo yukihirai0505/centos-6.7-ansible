@@ -1,0 +1,30 @@
+server {
+    listen               80;
+    keepalive_timeout    70;
+    server_name  todo.yukihirai0505.com;
+
+    root  /var/www/html/;
+
+    access_log   /var/log/nginx/todo.yukihirai0505.com/access.log main;
+    error_log    /var/log/nginx/todo.yukihirai0505.com/error.log  warn;
+
+    location = /robots.txt  {
+        access_log off;
+        log_not_found off;
+    }
+    location = /favicon.ico {
+        empty_gif;
+        access_log off;
+        log_not_found off;
+    }
+
+    location / {
+        proxy_pass http://todoapp;
+    }
+
+    location ~ /\. {
+        deny all;
+        log_not_found off;
+        access_log off;
+    }
+}

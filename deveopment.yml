@@ -1,0 +1,7 @@
+- hosts: centos-6.7
+  become: yes
+  roles:
+    - ./common-roles/base
+    - ./common-roles/nginx
+    - ./common-roles/php
+    - yukihirai0505

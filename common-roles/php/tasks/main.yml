@@ -1,0 +1,46 @@
+---
+
+- name: Install Remi repository
+  yum: name='http://rpms.remirepo.net/enterprise/remi-release-6.rpm'
+
+- name: Install php packages
+  yum: name={{ item.name }} state={{ item.state }} enablerepo=remi-php70
+  with_items:
+  - { name: 'php',                 state: 'present'}
+  - { name: 'php-cli',             state: 'present'}
+  - { name: 'php-common',          state: 'present'}
+  - { name: 'php-devel',           state: 'present'}
+  - { name: 'php-json',            state: 'present'}
+  - { name: 'php-mbstring',        state: 'present'}
+  - { name: 'php-gd',              state: 'present'}
+  - { name: 'php-fpm',             state: 'present'}
+  - { name: 'php-xml',             state: 'present'}
+  - { name: 'php-opcache',         state: 'present'}
+  - { name: 'php-pear',            state: 'present'}
+  - { name: 'php-mysql',           state: 'present'}
+  - { name: 'php-pdo',             state: 'present'}
+  - { name: 'php-mcrypt',          state: 'present'}
+  - { name: 'php-pecl-memcached',  state: 'present'}
+  - { name: 'php-pecl-zip',        state: 'present'}
+  - { name: 'php-process',         state: 'present'}
+
+- name: Enable php-fpm service
+  service: name=nginx state=started enabled=yes
+
+- name: Copy the php.ini configuration file (/etc/php.ini)
+  template:
+    src: etc/php.ini.j2
+    dest: /etc/php.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload php-fpm
+
+- name: Copy the www.conf configuration file (/etc/php-fpm.d/www.conf)
+  template:
+    src: etc/php-fpm.d/www.conf.j2
+    dest: /etc/php-fpm.d/www.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: reload php-fpm

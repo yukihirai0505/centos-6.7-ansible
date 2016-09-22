@@ -1,0 +1,94 @@
+
+
+server {
+    listen       80;
+    server_name  yukihirai0505.com www.yukihirai0505.com;
+
+    # ドキュメントルートディレクトリを設定します。
+    root   /var/www/html;
+
+    # index file タイプの優先順を設定します。
+    index   index.php index.html index.htm;
+
+    #access_log  /var/log/nginx/log/host.access.log  main;
+    # ログファイル名を設定します。
+    access_log   /var/log/nginx/www.yukihirai0505.com/access.log main;
+    error_log    /var/log/nginx/www.yukihirai0505.com/error.log  warn;
+
+    # robots.txt へのアクセスはログへの記録オフ
+    location = /robots.txt  {
+        access_log off;
+        log_not_found off;
+    }
+    # favicon へのアクセスはログへの記録オフ
+    location = /favicon.ico {
+        empty_gif;
+        access_log off;
+        log_not_found off;
+    }
+
+    # WordPress用のリダイレクト設定
+    # ファイルが存在しないURIの場合は、index.phpへ転送させる。
+    try_files $uri $uri/ /index.php?q=$uri&$args;
+
+    location / {
+
+        # WordPress パーマリンク設定を利用可能にする
+        if (!-e $request_filename) {
+            rewrite ^.+?(/wp-.*) $1 last;
+            rewrite ^.+?(/.*\.php)$ $1 last;
+            # ドキュメントルートから WordPress までの相対パス
+            # (ドキュメントルートにインストールしたため相対パスは記入なし)
+            rewrite ^ /index.php last;
+        }
+    }
+
+    error_page   500 502 503 504  /50x.html;
+
+    location = /50x.html {
+        root   /usr/share/nginx/html;
+    }
+
+    location ~ \.php$ {
+       # 存在しないPHPファイルをシャットアウト
+        if (!-f $request_filename) {
+            return 404;
+            break;
+        }
+        fastcgi_pass   phpfpm;
+        fastcgi_index  index.php;
+        fastcgi_param  SCRIPT_FILENAME  $document_root$fastcgi_script_name;
+        include        fastcgi_params;
+    }
+    # よくアクセスされる静的ファイルにブラウザキャッシュが効くように設定
+    location ~ \.(jpg|png|gif|swf|jpeg)$ {
+        log_not_found off; # 404の時にerror_logに書き込まないようにする設定
+        access_log off;
+        expires 1M;
+        add_header Cache-Control "public";
+    }
+
+    # cssとjavascriptは長めに
+    location ~* \.(?:css|js)$ {
+        expires 1y;
+        access_log off;
+        add_header Cache-Control "public";
+    }
+
+    location ~ \.ico$ {
+        log_not_found off;
+        access_log off;
+        expires max;
+    }
+
+    # ドット始まりのファイルはアクセスできないように
+    location ~ /\. {
+        deny all;
+        log_not_found off;
+        access_log off;
+    }
+
+    location ~ /wp-admin/$ {
+        rewrite ^/wp-admin/$ /wp-admin/index.php last;
+    }
+}
