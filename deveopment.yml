@@ -8,4 +8,5 @@
     - ./common-roles/python
     - ./common-roles/letsencrypt
     - ./common-roles/cron
+    - ./common-roles/supervisor
     - yukihirai0505

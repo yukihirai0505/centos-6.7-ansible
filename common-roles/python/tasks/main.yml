@@ -1,5 +1,8 @@
 ---
 
+# This script was referring to the site here.
+# - https://github.com/tcosta84/ansible-role-python/blob/master/tasks/install_python.yml
+
 - name: Check Python-3.5.0 installed
   shell: python3 --version | awk '{print $2}'
   ignore_errors: true

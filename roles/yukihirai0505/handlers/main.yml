@@ -1,1 +1,8 @@
 ---
+
+- name: update photo-library
+  command: supervisorctl photo-library update
+
+- name: restart photo-library
+  supervisorctl: name=photo-library state=restarted
+  ignore_errors: True
