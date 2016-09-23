@@ -6,4 +6,4 @@
 - name: Clone letsencrypt repo
   git:
     repo=https://github.com/letsencrypt/letsencrypt
-    dest={{ansible_env.PWD}}/letsencrypt version=master accept_hostkey=yes
+    dest={{ ansible_env.PWD }}/letsencrypt version=master accept_hostkey=yes

@@ -1,0 +1,26 @@
+---
+
+- name: Add renew_letsencrypt sh file
+  template:
+    src: renew_letsencrypt.sh.j2
+    dest: '{{ ansible_env.PWD }}/renew_letsencrypt.sh'
+
+- name: Create dump directory
+  file:
+    path: '{{ ansible_env.PWD }}/dump'
+    state: directory
+
+- name: Add mysqldump cron job
+  cron:
+    name: daily mysql dump job
+    minute: 0
+    hour: 0
+    job: mysqldump -uroot -proot --all-databases > {{ ansible_env.PWD }}/dump/`date +\%Y\%m\%d`.dump
+
+- name: Add renew letsencrypt cron job
+  cron:
+    name: monthly renew letsencrypt job
+    minute: 0
+    hour: 0
+    day: 1
+    job: sh {{ ansible_env.PWD }}/renew_letsencrypt.sh

@@ -1,0 +1,7 @@
+#!/bin/sh
+
+cd letsencrypt/
+git pull
+sudo service nginx stop
+./letsencrypt-auto renew
+sudo service nginx start

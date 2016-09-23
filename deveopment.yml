@@ -7,4 +7,5 @@
     - ./common-roles/mysql
     - ./common-roles/python
     - ./common-roles/letsencrypt
+    - ./common-roles/cron
     - yukihirai0505
