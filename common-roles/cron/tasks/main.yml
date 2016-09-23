@@ -4,6 +4,7 @@
   template:
     src: renew_letsencrypt.sh.j2
     dest: '{{ ansible_env.PWD }}/renew_letsencrypt.sh'
+    mode: 655
 
 - name: Create dump directory
   file:
