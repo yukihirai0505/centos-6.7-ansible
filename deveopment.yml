@@ -6,4 +6,5 @@
     - ./common-roles/php
     - ./common-roles/mysql
     - ./common-roles/python
+    - ./common-roles/letsencrypt
     - yukihirai0505
