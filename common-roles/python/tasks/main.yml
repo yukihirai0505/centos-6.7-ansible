@@ -1,46 +1,39 @@
 ---
-
 # This script was referring to the site here.
 # - https://github.com/tcosta84/ansible-role-python/blob/master/tasks/install_python.yml
 
-- name: Check Python-3.5.0 installed
-  shell: python3 --version | awk '{print $2}'
-  ignore_errors: true
-  register: python_version
+- name: Check if python3.5 is already installed
+  stat: path=/usr/local/python/bin/python3.5
+  register: python
 
-- name: Copy dl_python-3.5.0.sh file
-  template:
-    src: tmp/dl_python-3.5.0.sh.j2
-    dest: /tmp/dl_python-3.5.0.sh
-    owner: root
-    group: root
-    mode: 0655
-  when: python_version.stdout != '3.5.0'
+- name: Download Python-3.5.0
+  get_url: url=https://www.python.org/ftp/python/3.5.0/Python-3.5.0.tgz
+           dest=/tmp/Python-3.5.0.tar
+  when: not python.stat.exists
 
-- name: Unpack Python-3.5.0.tgz
-  unarchive:
-    src: common-roles/python/templates/tmp/Python-3.5.0.tgz
-    dest: /tmp/
-  when: python_version.stdout != '3.5.0'
+- name: Unpack Python-3.5.0
+  unarchive: src=/tmp/Python-3.5.0.tar dest=/tmp copy=no
+  when: not python.stat.exists
 
-- name: Install python-3.5.0
-  shell: /tmp/dl_python-3.5.0.sh
-  when: python_version.stdout != '3.5.0'
+- name: Configure, compile and install python
+  shell: cd /tmp/Python-3.5.0 && sudo {{ item }}
+  with_items:
+    - ./configure --prefix=/usr/local/python
+    - make
+    - make altinstall
+  when: not python.stat.exists
 
 - name: Create python symbolic link
-  file: src=/usr/local/python/bin/python3 dest=/usr/local/bin/python state=link
-  when: python_version.stdout != '3.5.0'
+  file: src=/usr/local/python/bin/python3.5 dest=/usr/local/bin/python state=link
 
 - name: Create pip symbolic link
   file: src=/usr/local/python/bin/pip3.5 dest=/usr/local/bin/pip state=link
-  when: python_version.stdout != '3.5.0'
 
 - name: Create python symbolic link
   file:
-    src: /usr/local/python/bin/python3
-    dest: /usr/bin/python3
+    src: /usr/local/python/bin/python3.5
+    dest: /usr/bin/python3.5
     state: link
     owner: root
     group: root
     mode: 0655
-  when: python_version.stdout != '3.5.0'
