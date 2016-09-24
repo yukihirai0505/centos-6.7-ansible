@@ -6,3 +6,10 @@
 - name: restart photo-library
   supervisorctl: name=photo-library state=restarted
   ignore_errors: True
+
+- name: update portfolio
+  command: supervisorctl portfolio update
+
+- name: restart portfolio
+  supervisorctl: name=portfolio state=restarted
+  ignore_errors: True
