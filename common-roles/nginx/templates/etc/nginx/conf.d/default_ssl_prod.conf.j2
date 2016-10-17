@@ -1,19 +1,37 @@
-
-
+# For HTTP
 server {
-    listen       80;
-    server_name  yukihirai0505.com www.yukihirai0505.com;
-
-    # ドキュメントルートディレクトリを設定します。
+    listen 80;
+    server_name yukihirai0505.com www.yukihirai0505.com;
+    access_log   /var/log/nginx/www.yukihirai0505.com/access.log main;
+    error_log    /var/log/nginx/www.yukihirai0505.com/error.log  warn;
+    return 301 https://yukihirai0505.com$request_uri;
+}
+# FOR HTTPS
+server {
+    listen 443 ssl;
+    server_name www.yukihirai0505.com;
+    include templates.d/ssl.conf;
+    access_log   /var/log/nginx/www.yukihirai0505.com/access.log main;
+    error_log    /var/log/nginx/www.yukihirai0505.com/error.log  warn;
+    return 301 https://yukihirai0505.com$request_uri;
+}
+server {
+    listen 443 ssl;
+    server_name yukihirai0505.com;
+    include templates.d/ssl.conf;
+    # document root
     root   /var/www/html;
 
     # index file タイプの優先順を設定します。
     index   index.php index.html index.htm;
 
-    #access_log  /var/log/nginx/log/host.access.log  main;
-    # ログファイル名を設定します。
     access_log   /var/log/nginx/www.yukihirai0505.com/access.log main;
     error_log    /var/log/nginx/www.yukihirai0505.com/error.log  warn;
+
+    # pecotterのwantedlyにのっているのでリダイレクトしてあげよっと
+    location ^~ /diary-182 {
+      rewrite ^(.*)$ http://yukihirai.hatenablog.com/entry/pecotter redirect;
+    }
 
     # robots.txt へのアクセスはログへの記録オフ
     location = /robots.txt  {
@@ -27,20 +45,8 @@ server {
         log_not_found off;
     }
 
-    # WordPress用のリダイレクト設定
-    # ファイルが存在しないURIの場合は、index.phpへ転送させる。
-    try_files $uri $uri/ /index.php?q=$uri&$args;
-
-    location / {
-
-        # WordPress パーマリンク設定を利用可能にする
-        if (!-e $request_filename) {
-            rewrite ^.+?(/wp-.*) $1 last;
-            rewrite ^.+?(/.*\.php)$ $1 last;
-            # ドキュメントルートから WordPress までの相対パス
-            # (ドキュメントルートにインストールしたため相対パスは記入なし)
-            rewrite ^ /index.php last;
-        }
+    location ^~ /instagram/ {
+        proxy_pass http://instagram;
     }
 
     error_page   500 502 503 504  /50x.html;
@@ -86,9 +92,5 @@ server {
         deny all;
         log_not_found off;
         access_log off;
-    }
-
-    location ~ /wp-admin/$ {
-        rewrite ^/wp-admin/$ /wp-admin/index.php last;
     }
 }

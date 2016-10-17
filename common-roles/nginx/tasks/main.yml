@@ -95,6 +95,19 @@
     - portfolio
     - todo
 
+- name: Create templates.d directory
+  file:
+    path: /etc/nginx/templates.d
+    state: directory
+
+- name: Copy ssl configuration file (/etc/nginx/templates.d/ssl.conf)
+  template:
+    src: etc/nginx/templates.d/ssl.conf.j2
+    dest: /etc/nginx/templates.d/ssl.conf
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Copy the nginx proxy configuration file (/etc/nginx/conf.d/nginx.conf)
   template:
     src: etc/nginx/conf.d/{{ item }}.j2
@@ -105,8 +118,7 @@
   with_items:
     - proxy.conf
     - upstream.conf
-    - php.conf
-    - wordpress.conf.org
+    - default_ssl.conf
     - portfolio.conf
     - todo.conf
   notify: reload nginx
