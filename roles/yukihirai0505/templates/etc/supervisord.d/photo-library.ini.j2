@@ -1,9 +1,0 @@
-[program:photo-library]
-process_name=%(program_name)s
-directory={{ ansible_env.PWD }}/photo-library/target/universal/stage/bin
-command=/bin/bash -c "{{ ansible_env.PWD }}/photo-library/target/universal/stage/bin/photo-library -Dhttp.port=9060 -Dconfig.file={{ ansible_env.PWD }}/photo-library/target/universal/stage/conf/application.conf"
-autostart=true
-autorestart=true
-user=root
-redirect_stderr=true
-stdout_logfile=/dev/null

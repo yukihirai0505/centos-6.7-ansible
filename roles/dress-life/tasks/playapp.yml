@@ -1,0 +1,16 @@
+---
+
+- name: Create supervisord ini file [dress-life]
+  template:
+    src: etc/supervisord.d/dress-life.ini.j2
+    dest: /etc/supervisord.d/dress-life.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart dress-life
+
+- name: Configure supervisorctl [dress-life]
+  supervisorctl:
+    name: dress-life
+    state: present
+  ignore_errors: True

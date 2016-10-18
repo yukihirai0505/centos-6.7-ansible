@@ -1,14 +1,14 @@
 server {
     listen               80;
     keepalive_timeout    70;
-    server_name  portfolio.yukihirai0505.com;
+    server_name  todo.yukihirai0505.com;
 
     root  /var/www/html/;
 
     #access_log  /var/log/nginx/log/host.access.log  main;
     # ログファイル名を設定します。
-    access_log   /var/log/nginx/portfolio.yukihirai0505.com/access.log main;
-    error_log    /var/log/nginx/portfolio.yukihirai0505.com/error.log  warn;
+    access_log   /var/log/nginx/todo.yukihirai0505.com/access.log main;
+    error_log    /var/log/nginx/todo.yukihirai0505.com/error.log  warn;
 
     # robots.txt へのアクセスはログへの記録オフ
     location = /robots.txt  {
@@ -23,7 +23,7 @@ server {
     }
 
     location / {
-        proxy_pass http://portfolio;
+        proxy_pass http://todoapp;
     }
 
     # ドット始まりのファイルはアクセスできないように

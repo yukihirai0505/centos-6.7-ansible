@@ -1,0 +1,9 @@
+[program:todo-app]
+process_name=%(program_name)s
+directory={{ ansible_env.PWD }}/todo-app/target/universal/stage/bin
+command=/bin/bash -c "{{ ansible_env.PWD }}/todo-app/target/universal/stage/bin/todo-app -Dhttp.port=9002 -Dconfig.file={{ ansible_env.PWD }}/todo-app/target/universal/stage/conf/application.conf"
+autostart=true
+autorestart=true
+user=root
+redirect_stderr=true
+stdout_logfile=/dev/null

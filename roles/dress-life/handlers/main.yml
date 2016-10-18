@@ -1,0 +1,8 @@
+---
+
+- name: update dress-life
+  command: supervisorctl dress-life update
+
+- name: restart dress-life
+  supervisorctl: name=dress-life state=restarted
+  ignore_errors: True

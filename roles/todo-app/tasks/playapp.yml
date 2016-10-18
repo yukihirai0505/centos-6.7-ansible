@@ -1,0 +1,16 @@
+---
+
+- name: Create supervisord ini file [todo-app]
+  template:
+    src: etc/supervisord.d/todo-app.ini.j2
+    dest: /etc/supervisord.d/todo-app.ini
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart todo-app
+
+- name: Configure supervisorctl [todo-app]
+  supervisorctl:
+    name: todo-app
+    state: present
+  ignore_errors: True

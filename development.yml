@@ -3,10 +3,13 @@
   roles:
     - ./common-roles/base
     - ./common-roles/nginx
+    - ./common-roles/redis
     - ./common-roles/php
     - ./common-roles/mysql
     - ./common-roles/python
     - ./common-roles/letsencrypt
     - ./common-roles/cron
     - ./common-roles/supervisor
-    - yukihirai0505
+    - www
+    - dress-life
+    - todo-app

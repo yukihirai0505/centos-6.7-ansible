@@ -1,0 +1,47 @@
+---
+- name: Check if Redis is already installed
+  stat: path=/usr/local/bin/redis-server
+  register: redis
+
+- name: Download Redis
+  get_url: url=http://download.redis.io/releases/redis-3.2.4.tar.gz
+           dest=/usr/local/src/redis-3.2.4.tar
+  when: not redis.stat.exists
+
+- name: Unpack Redis
+  unarchive: src=/usr/local/src/redis-3.2.4.tar dest=/usr/local/src/ copy=no
+  when: not redis.stat.exists
+
+- name: make, test and install Redis
+  shell: cd /usr/local/src/redis-3.2.4 && sudo {{ item }}
+  with_items:
+    - make
+    - make test
+    - make install
+  when: not redis.stat.exists
+
+- name: Create Redis directory
+  file:
+    path: /etc/redis
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Copy the redis configuration file
+  template:
+    src: etc/redis/redis.conf.j2
+    dest: /etc/redis/redis.conf
+    owner: root
+    group: root
+    mode: 0644
+
+- name: Change permission redis.log
+  file:
+    path: /var/log/redis.log
+    owner: root
+    group: root
+    mode: 0766
+
+- name: Start redis-server
+  shell: /usr/local/bin/redis-server &

@@ -1,0 +1,9 @@
+[program:dress-life]
+process_name=%(program_name)s
+directory={{ ansible_env.PWD }}/dress-life/target/universal/stage/bin
+command=/bin/bash -c "{{ ansible_env.PWD }}/dress-life/target/universal/stage/bin/dl-web -Dhttp.port=9001 -Dconfig.file={{ ansible_env.PWD }}/dress-life/target/universal/stage/conf/application-prod.conf"
+autostart=true
+autorestart=true
+user=root
+redirect_stderr=true
+stdout_logfile=/dev/null

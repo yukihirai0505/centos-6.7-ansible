@@ -4,7 +4,21 @@ server {
     server_name yukihirai0505.com www.yukihirai0505.com;
     access_log   /var/log/nginx/www.yukihirai0505.com/access.log main;
     error_log    /var/log/nginx/www.yukihirai0505.com/error.log  warn;
-
+    return 301 https://yukihirai0505.com$request_uri;
+}
+# FOR HTTPS
+server {
+    listen 443 ssl;
+    server_name www.yukihirai0505.com;
+    include templates.d/ssl.conf;
+    access_log   /var/log/nginx/www.yukihirai0505.com/access.log main;
+    error_log    /var/log/nginx/www.yukihirai0505.com/error.log  warn;
+    return 301 https://yukihirai0505.com$request_uri;
+}
+server {
+    listen 443 ssl;
+    server_name yukihirai0505.com;
+    include templates.d/ssl.conf;
     # document root
     root   /var/www/html;
 
@@ -13,11 +27,6 @@ server {
 
     access_log   /var/log/nginx/www.yukihirai0505.com/access.log main;
     error_log    /var/log/nginx/www.yukihirai0505.com/error.log  warn;
-
-    # pecotterのwantedlyにのっているのでリダイレクトしてあげよっと
-    location ^~ /diary-182 {
-      rewrite ^(.*)$ http://yukihirai.hatenablog.com/entry/pecotter redirect;
-    }
 
     # robots.txt へのアクセスはログへの記録オフ
     location = /robots.txt  {
@@ -29,10 +38,6 @@ server {
         empty_gif;
         access_log off;
         log_not_found off;
-    }
-
-    location ^~ /instagram/ {
-        proxy_pass http://instagram;
     }
 
     error_page   500 502 503 504  /50x.html;
@@ -79,4 +84,5 @@ server {
         log_not_found off;
         access_log off;
     }
+
 }
