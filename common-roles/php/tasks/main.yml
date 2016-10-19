@@ -15,6 +15,7 @@
   - { name: 'php-gd',              state: 'present'}
   - { name: 'php-fpm',             state: 'present'}
   - { name: 'php-xml',             state: 'present'}
+  - { name: 'php-xmlrpc',          state: 'present'}
   - { name: 'php-opcache',         state: 'present'}
   - { name: 'php-pear',            state: 'present'}
   - { name: 'php-mysql',           state: 'present'}
